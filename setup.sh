@@ -4,7 +4,8 @@ ALPACA_APP_DIR="/opt/ASCOM/AlpacaSafetyMonitor"
 WEATHER_APP_DIR="/opt/ASCOM/Weather"
 ALPACA_SERVICE_NAME="AlpacaSafetyMonitor"
 WEATHER_SERVICE_NAME="Weather"
-PYTHON_SCRIPT="app.py"
+ALPACA_PYTHON_SCRIPT="app.py"
+WEATHER_PYTHON_SCRIPT="weather.py"
 REQUIREMENTS_FILE="requirements.txt"
 ALPACA_VENV_DIR="$ALPACA_APP_DIR/venv"
 WEATHER_VENV_DIR="$WEATHER_APP_DIR/venv"
@@ -43,7 +44,7 @@ After=network.target
 
 [Service]
 Type=simple
-ExecStart=$ALPACA_VENV_DIR/bin/python $ALPACA_APP_DIR/$PYTHON_SCRIPT
+ExecStart=$ALPACA_VENV_DIR/bin/python $ALPACA_APP_DIR/$ALPACA_PYTHON_SCRIPT
 Restart=on-failure
 
 [Install]
@@ -57,7 +58,7 @@ After=network.target
 
 [Service]
 Type=simple
-ExecStart=$WEATHER_VENV_DIR/bin/python $WEATHER_APP_DIR/$PYTHON_SCRIPT
+ExecStart=$WEATHER_VENV_DIR/bin/python $WEATHER_APP_DIR/$WEATHER_PYTHON_SCRIPT
 Restart=on-failure
 
 [Install]
