@@ -9,6 +9,7 @@ WEATHER_PYTHON_SCRIPT="weather.py"
 REQUIREMENTS_FILE="requirements.txt"
 ALPACA_VENV_DIR="$ALPACA_APP_DIR/venv"
 WEATHER_VENV_DIR="$WEATHER_APP_DIR/venv"
+APP_USER="austin"
 
 # Installation of Python and virtualenv
 apt-get update
