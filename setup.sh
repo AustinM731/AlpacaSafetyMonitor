@@ -19,10 +19,10 @@ mkdir -p $ALPACA_APP_DIR
 mkdir -p $WEATHER_APP_DIR
 
 # Move contents of Alpaca repo to application directory
-mv Alpaca/* $ALPACA_APP_DIR/
+cp Alpaca/* $ALPACA_APP_DIR/
 
 # Move contents of WeatherStation repo to application directory
-mv WeatherStation/* $WEATHER_APP_DIR/
+cp WeatherStation/* $WEATHER_APP_DIR/
 
 # Set up Python virtual environment for Alpaca
 if [ ! -d "$ALPACA_VENV_DIR" ]; then
