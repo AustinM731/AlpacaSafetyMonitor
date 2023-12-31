@@ -6,6 +6,7 @@ matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 import matplotlib.patches as mpatches
+import os
 import psycopg2
 import config_secrets as secrets
 from sqlalchemy import create_engine
@@ -108,7 +109,10 @@ def generate_all_graphs(observer_latitude, observer_longitude):
     # plot_sun_moon_positions(observer_latitude, observer_longitude, axs[4])
 
     plt.tight_layout()
-    fig.savefig('static/graphs.png', transparent=True)
+    current_script_path = os.path.dirname(os.path.abspath(__file__))
+    static_dir_path = os.path.join(current_script_path, 'static')
+    graph_path = os.path.join(static_dir_path, 'graphs.png')
+    fig.savefig(graph_path, transparent=True)
     plt.close(fig)
 
 generate_all_graphs(secrets.observer_latitude, secrets.observer_longitude)
