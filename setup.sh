@@ -36,6 +36,10 @@ if [ ! -d "$WEATHER_VENV_DIR" ]; then
 fi
 $WEATHER_VENV_DIR/bin/pip install -r $WEATHER_APP_DIR/$REQUIREMENTS_FILE
 
+# Change ownership of application directory to user
+chown -R $APP_USER:$APP_USER $ALPACA_APP_DIR
+chown -R $APP_USER:$APP_USER $WEATHER_APP_DIR
+
 # Create a systemd service file for Alpaca
 ALPACA_SERVICE_FILE="/etc/systemd/system/$ALPACA_SERVICE_NAME.service"
 echo "[Unit]
