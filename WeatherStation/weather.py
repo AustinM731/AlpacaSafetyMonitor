@@ -128,6 +128,14 @@ def poll_sensors():
 sensor_polling_thread = threading.Thread(target=poll_sensors, daemon=True)
 sensor_polling_thread.start()
 
+def generate_graphs():
+    while True:
+        graphs.generate_all_graphs(secrets.observer_latitude, secrets.observer_longitude)
+        time.sleep(300)
+
+graph_generation_thread = threading.Thread(target=generate_graphs, daemon=True)
+graph_generation_thread.start()
+
 @app.route('/')
 def home():
     return render_template('frontend.html')
