@@ -130,6 +130,7 @@ class issafe:
         #                     NotConnectedException()).json
         #     return
         try:
+            safety_device.is_safe()
             val = safety_device.issafe
             resp.text = PropertyResponse(val, req).json
         except Exception as ex:

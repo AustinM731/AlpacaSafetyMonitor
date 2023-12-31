@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Observatory Dashboard</title>
+    <!-- Link to Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Additional stylesheets can be linked here -->
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #414141; /* Dark background */
+            color: #f0f0f0; /* Lighter text for readability */
+        }
+        .header {
+            background-color: #002366; /* Dark blue background */
+            color: white;
+            padding: 10px;
+            text-align: center;
+        }
+        .sensor-data {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 5px 0;
+        }
+        .sensor-data div {
+            margin: 0 10px;
+            color: white; /* Ensure text here is also light for readability */
+        }
+        .sensor-value {
+            font-weight: bold;
+        }
+        /* Optional: if you have links, adjust their color for visibility */
+        a {
+            color: #4da6ff;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="header">
+        <h1>My Observatory</h1>
+        <div class="sensor-data">
+            <div>Ambient Temperature: <span class="sensor-value" id="ambientTemperature">--</span> F</div>
+            <div>Sky Temperature: <span class="sensor-value" id="skyTemperature">--</span> F</div>
+            <div>Humidity: <span class="sensor-value" id="humidity">--</span> %</div>
+            <div>Cloud Cover: <span class="sensor-value" id="cloudiness">--</span></div>
+            <div>Air Pressure: <span class="sensor-value" id="pressure">--</span> inHg</div>
+            <div>Rain: <span class="sensor-value" id="rain">--</span></div>
+            <div>Safe: <span class="sensor-value" id="safe">--</span></div>
+            <!-- ... More sensor values ... -->
+        </div>
+    </div>
+    <div>
+        <img src="graphs.png" alt="Graphs" style="max-width:100%; height:auto; display:block; margin:auto;">
+    </div>
+    </div>
+    <!-- Link to your JavaScript file -->
+    <script src="frontend.js"></script>
+</body>
+</html>

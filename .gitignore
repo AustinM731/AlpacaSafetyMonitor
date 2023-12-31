@@ -1,3 +1,7 @@
+# App files
+config_secrets.py
+graphs.png
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
