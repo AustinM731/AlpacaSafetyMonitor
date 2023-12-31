@@ -125,10 +125,10 @@ class supportedactions:
 class issafe:
 
     def on_get(self, req: Request, resp: Response, devnum: int):
-        # if not safety_device.connected:
-        #     resp.text = PropertyResponse(None, req,
-        #                     NotConnectedException()).json
-        #     return
+        if not safety_device.connected:
+            resp.text = PropertyResponse(None, req,
+                            NotConnectedException()).json
+            return
         try:
             safety_device.is_safe()
             val = safety_device.issafe

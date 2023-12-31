@@ -31,7 +31,7 @@ class SafetyDevice:
             try:
                 response = requests.get(self.safety_url)
                 response.raise_for_status()  # Raises an HTTPError if the HTTP request returned an unsuccessful status code
-                self.issafe = response.text.lower() == 'true'  # Convert response to boolean
+                self.issafe = response.text.strip().lower() == 'true'  # Convert response to boolean
                 return self.issafe
             except requests.RequestException as e:
                 print(f"Error querying safety status: {e}")
