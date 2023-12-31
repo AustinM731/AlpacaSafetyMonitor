@@ -40,8 +40,8 @@ def insert_into_db(data):
         conn = psycopg2.connect(**db_config)
         cur = conn.cursor()
         query = """
-        INSERT INTO sensor_data (timestamp, ambient_temp, pressure, humidity, sky_temp, cloudiness, rain)
-        VALUES (%s, %s, %s, %s, %s, %s, %s)
+        INSERT INTO sensor_data (timestamp, ambient_temp, pressure, humidity, sky_temp, cloudiness, rain, safe)
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
         """
         cur.execute(query, data)
         conn.commit()
@@ -118,7 +118,8 @@ def poll_sensors():
             humidity,
             sky_temp_f,
             cloudiness,
-            rain
+            rain,
+            safe
         )
 
         insert_into_db(db_data)
