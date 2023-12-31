@@ -1,4 +1,4 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, render_template
 from flask_cors import CORS
 import config_secrets as secrets
 import board
@@ -127,6 +127,10 @@ def poll_sensors():
 
 sensor_polling_thread = threading.Thread(target=poll_sensors, daemon=True)
 sensor_polling_thread.start()
+
+@app.route('/')
+def home():
+    return render_template('frontend.html')
 
 @app.route('/data')
 def get_data():
