@@ -10,6 +10,19 @@ class SafetyDevice:
         self.issafe = False
         self.safety_url = "http://localhost:5000/is_safe"  # URL of your Flask endpoint
 
+    def connect(self):
+        """
+        Connects to the Safety Monitor.
+        """
+        self.connected = True
+
+    def disconnect(self):
+        """
+        Disconnects from the Safety Monitor.
+        """
+        if self.connected:
+            self.connected = False
+
     def is_safe(self):
         """
         Returns True if the safety monitor is safe, False otherwise.
@@ -26,16 +39,3 @@ class SafetyDevice:
         else:
             print("Safety Device is not connected.")
             return False
-
-    def connect(self):
-        """
-        Connects to the Safety Monitor.
-        """
-        self.connected = True
-
-    def disconnect(self):
-        """
-        Disconnects from the Safety Monitor.
-        """
-        if self.connected:
-            self.connected = False
