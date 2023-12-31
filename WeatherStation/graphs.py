@@ -108,7 +108,7 @@ def generate_all_graphs(observer_latitude, observer_longitude):
     # plot_sun_moon_positions(observer_latitude, observer_longitude, axs[4])
 
     plt.tight_layout()
-    fig.savefig('static/graphs.png', transparent=True)
+    fig.savefig('/static/graphs.png', transparent=True)
     plt.close(fig)
 
 generate_all_graphs(secrets.observer_latitude, secrets.observer_longitude)
