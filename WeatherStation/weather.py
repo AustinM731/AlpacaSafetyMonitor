@@ -3,6 +3,7 @@ from flask_cors import CORS
 import config_secrets as secrets
 import board
 import busio
+import graphs
 import threading
 import time
 import psycopg2
