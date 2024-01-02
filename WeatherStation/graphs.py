@@ -96,7 +96,11 @@ db_engine = create_engine(f'postgresql://{db_config["user"]}:{db_config["passwor
 
 def generate_all_graphs(observer_latitude, observer_longitude):
     with db_engine.connect() as conn:
-        query = "SELECT timestamp, ambient_temp, sky_temp, humidity, pressure, rain, safe FROM sensor_data"
+        query = """
+        SELECT timestamp, ambient_temp, sky_temp, humidity, pressure, rain, safe 
+        FROM sensor_data
+        WHERE timestamp > CURRENT_TIMESTAMP - INTERVAL '48 hours'
+        """
         df = pd.read_sql(query, conn)
 
     fig, axs = plt.subplots(4, 1, figsize=(15, 20))
