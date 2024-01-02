@@ -4,9 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Observatory Dashboard</title>
-    <!-- Link to Chart.js CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- Additional stylesheets can be linked here -->
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -23,18 +20,32 @@
             display: flex;
             justify-content: space-around;
             align-items: center;
+            flex-wrap: wrap; /* Allow wrapping on smaller screens */
             padding: 5px 0;
         }
         .sensor-data div {
-            margin: 0 10px;
+            margin: 10px;
             color: white; /* Ensure text here is also light for readability */
         }
         .sensor-value {
             font-weight: bold;
         }
+        /* Responsive design for smaller screens */
+        @media (max-width: 600px) {
+            .sensor-data {
+                flex-direction: column;
+                align-items: start;
+            }
+        }
         /* Optional: if you have links, adjust their color for visibility */
         a {
             color: #4da6ff;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: auto;
         }
     </style>
 </head>
@@ -50,12 +61,10 @@
             <div>Air Pressure: <span class="sensor-value" id="pressure">--</span> inHg</div>
             <div>Rain: <span class="sensor-value" id="rain">--</span></div>
             <div>Safe: <span class="sensor-value" id="safe">--</span></div>
-            <!-- ... More sensor values ... -->
         </div>
     </div>
     <div>
-        <img src="/static/graphs.png" alt="Graphs" style="max-width:100%; height:auto; display:block; margin:auto;">
-    </div>
+        <img src="/static/graphs.png" alt="Graphs">
     </div>
     <!-- Link to your JavaScript file -->
     <script src="/static/frontend.js"></script>
