@@ -23,14 +23,31 @@ db_config = {
 def generate_clouds_graph(df, ax):
     ax.plot(df['timestamp'], df['ambient_temp'], label='Ambient Temperature')
     ax.plot(df['timestamp'], df['sky_temp'], label='Sky Temperature', color='lightblue')
-    ax.fill_between(df['timestamp'], df['ambient_temp'], df['ambient_temp'] - 25, color='gray', alpha=0.3)
+
+    # Heavy Clouds
+    ax.fill_between(df['timestamp'], df['ambient_temp'], df['ambient_temp'] - 10, 
+                    color='gray', alpha=0.5)
+    heavy_cloud_patch = mpatches.Patch(color='gray', alpha=0.5, label='Heavy Clouds')
+
+    # General Clouds
+    ax.fill_between(df['timestamp'], df['ambient_temp'], df['ambient_temp'] - 25, 
+                    color='gray', alpha=0.3)
     cloud_patch = mpatches.Patch(color='gray', alpha=0.3, label='Clouds')
-    legend = ax.legend(handles=[*ax.get_legend_handles_labels()[0], cloud_patch], 
+
+    # Light Clouds
+    ax.fill_between(df['timestamp'], df['ambient_temp'], df['ambient_temp'] - 30, 
+                    color='gray', alpha=0.1)
+    light_cloud_patch = mpatches.Patch(color='gray', alpha=0.1, label='Light Clouds')
+
+    # Adjusting legend to include new cloud types
+    legend = ax.legend(handles=[*ax.get_legend_handles_labels()[0], heavy_cloud_patch, cloud_patch, light_cloud_patch], 
                        loc='upper center', bbox_to_anchor=(0.5, -0.1), 
                        fancybox=True, shadow=True, ncol=3)
     legend.get_frame().set_alpha(0.5)
+
     ax.set_ylabel('Temperature F')
     ax.set_title('Clouds Graph')
+
 
 def generate_humidity_graph(df, ax):
     ax.plot(df['timestamp'], df['humidity'], label='Humidity', color='green')
