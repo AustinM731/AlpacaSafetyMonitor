@@ -32,7 +32,7 @@ polling_interval = 30
 latest_sensor_data = {}
 safe = True
 cloudy_condition_duration = 0
-unsafe_cloudy_condition_duration = 10*60
+unsafe_cloudy_condition_duration = 5*60
 
 def insert_into_db(data):
     """ Insert sensor data into the database """
@@ -71,24 +71,21 @@ def determine_cloudiness(ambient_temp_f, sky_temp_f):
         return "Clear"
     
 def is_cloudy_condition(cloudiness):
-    return cloudiness in ["Clouds", "Heavy Clouds"]
+    return cloudiness in ["Light Clouds", "Clouds", "Heavy Clouds"]
     
 def determine_safety(sensor_data):
     global cloudy_condition_duration, safe
 
     if is_cloudy_condition(sensor_data.get("cloudiness", "")):
-        cloudy_condition_duration += polling_interval  # Increment by the polling interval (30 seconds)
+        cloudy_condition_duration += polling_interval
     else:
-        cloudy_condition_duration = 0  # Reset the duration if conditions are clear
+        cloudy_condition_duration = 0
 
-    if cloudy_condition_duration >= unsafe_cloudy_condition_duration:
+    if cloudy_condition_duration >= unsafe_cloudy_condition_duration or sensor_data.get("rain", False):
         safe = False
-
-    if sensor_data.get("rain", True):
-        safe = False
-
     else:
         safe = True
+
     
 def poll_sensors():
     global latest_sensor_data
