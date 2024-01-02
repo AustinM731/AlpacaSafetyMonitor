@@ -4,42 +4,51 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Observatory Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <style>
         body {
-            font-family: Arial, sans-serif;
-            background-color: #414141; /* Dark background */
-            color: #f0f0f0; /* Lighter text for readability */
+            font-family: 'Roboto', sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            margin: 0;
+            padding: 0;
         }
         .header {
-            background-color: #002366; /* Dark blue background */
+            background-color: #005f73;
             color: white;
-            padding: 10px;
+            padding: 15px 0;
             text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
         .sensor-data {
             display: flex;
             justify-content: space-around;
             align-items: center;
-            flex-wrap: wrap; /* Allow wrapping on smaller screens */
-            padding: 5px 0;
+            flex-wrap: wrap;
+            padding: 10px 0;
         }
         .sensor-data div {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 15px;
             margin: 10px;
-            color: white; /* Ensure text here is also light for readability */
+            flex-basis: calc(33.333% - 20px);
+            text-align: center;
+            color: #333;
         }
         .sensor-value {
             font-weight: bold;
+            color: #005f73;
         }
-        /* Responsive design for smaller screens */
         @media (max-width: 600px) {
             .sensor-data {
                 flex-direction: column;
                 align-items: start;
             }
-        }
-        /* Optional: if you have links, adjust their color for visibility */
-        a {
-            color: #4da6ff;
+            .sensor-data div {
+                flex-basis: 100%;
+            }
         }
         img {
             max-width: 100%;
@@ -47,21 +56,24 @@
             display: block;
             margin: auto;
         }
+        a {
+            color: #4da6ff;
+        }
     </style>
 </head>
 
 <body>
     <div class="header">
         <h1>My Observatory</h1>
-        <div class="sensor-data">
-            <div>Ambient Temperature: <span class="sensor-value" id="ambientTemperature">--</span> F</div>
-            <div>Sky Temperature: <span class="sensor-value" id="skyTemperature">--</span> F</div>
-            <div>Humidity: <span class="sensor-value" id="humidity">--</span> %</div>
-            <div>Cloud Cover: <span class="sensor-value" id="cloudiness">--</span></div>
-            <div>Air Pressure: <span class="sensor-value" id="pressure">--</span> inHg</div>
-            <div>Rain: <span class="sensor-value" id="rain">--</span></div>
-            <div>Safe: <span class="sensor-value" id="safe">--</span></div>
-        </div>
+    </div>
+    <div class="sensor-data">
+        <div>Ambient Temperature: <span class="sensor-value" id="ambientTemperature">--</span> F</div>
+        <div>Sky Temperature: <span class="sensor-value" id="skyTemperature">--</span> F</div>
+        <div>Humidity: <span class="sensor-value" id="humidity">--</span> %</div>
+        <div>Cloud Cover: <span class="sensor-value" id="cloudiness">--</span></div>
+        <div>Air Pressure: <span class="sensor-value" id="pressure">--</span> inHg</div>
+        <div>Rain: <span class="sensor-value" id="rain">--</span></div>
+        <div>Safe: <span class="sensor-value" id="safe">--</span></div>
     </div>
     <div>
         <img src="/static/graphs.png" alt="Graphs">
