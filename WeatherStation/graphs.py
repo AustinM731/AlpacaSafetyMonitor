@@ -31,8 +31,12 @@ def set_plot_style(ax):
     ax.tick_params(axis='x', colors='white')
     ax.tick_params(axis='y', colors='white')
     ax.title.set_color('white')
-    for line in ax.get_legend().get_lines():
-        line.set_color('white')
+
+    # Check if legend exists before trying to modify it
+    legend = ax.get_legend()
+    if legend:
+        for line in legend.get_lines():
+            line.set_color('white')
 
 def generate_clouds_graph(df, ax):
     ax.plot(df['timestamp'], df['ambient_temp'], label='Ambient Temperature', color='orange')
