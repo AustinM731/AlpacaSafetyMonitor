@@ -8,17 +8,17 @@
     <style>
         body {
             font-family: 'Roboto', sans-serif;
-            background-color: #f4f4f4;
-            color: #333;
+            background-color: #121212; /* Dark background for dark mode */
+            color: #e0e0e0; /* Light text for readability */
             margin: 0;
             padding: 0;
         }
         .header {
-            background-color: #005f73;
-            color: white;
+            background-color: #1c1c1c; /* Slightly lighter dark shade for the header */
+            color: #ffffff;
             padding: 15px 0;
             text-align: center;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3); /* Darker shadow for depth */
         }
         .sensor-data {
             display: flex;
@@ -28,18 +28,18 @@
             padding: 10px 0;
         }
         .sensor-data div {
-            background-color: white;
+            background-color: #252525; /* Dark cards for sensors */
             border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.5); /* Stronger shadow for contrast */
             padding: 15px;
             margin: 10px;
             flex-basis: calc(33.333% - 20px);
             text-align: center;
-            color: #333;
+            color: #e0e0e0; /* Light text for readability */
         }
         .sensor-value {
             font-weight: bold;
-            color: #005f73;
+            color: #4db8ff; /* Bright color for key values */
         }
         @media (max-width: 600px) {
             .sensor-data {
@@ -57,7 +57,7 @@
             margin: auto;
         }
         a {
-            color: #4da6ff;
+            color: #4da6ff; /* Bright link color for contrast */
         }
     </style>
 </head>
