@@ -59,8 +59,8 @@ def celsius_to_fahrenheit(celsius):
 def hpa_to_inhg(hpa):
     return hpa * 0.02953
 
-def determine_cloudiness(ambient_temp, sky_temp):
-    temp_diff = abs(ambient_temp - sky_temp)
+def determine_cloudiness(ambient_temp_f, sky_temp_f):
+    temp_diff = abs(ambient_temp_f - sky_temp_f)
     if temp_diff < 10:
         return "Heavy Clouds"
     elif temp_diff < 25:
