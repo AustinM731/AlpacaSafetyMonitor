@@ -73,7 +73,9 @@ WantedBy=multi-user.target" | sudo tee $WEATHER_SERVICE_FILE
 systemctl daemon-reload
 systemctl start $ALPACA_SERVICE_NAME
 systemctl enable $ALPACA_SERVICE_NAME
+systemctl restart $ALPACA_SERVICE_NAME
 systemctl start $WEATHER_SERVICE_NAME
 systemctl enable $WEATHER_SERVICE_NAME
+systemctl restart $WEATHER_SERVICE_NAME
 
 echo "Installation complete. Services $ALPACA_SERVICE_NAME and $WEATHER_SERVICE_NAME started."
