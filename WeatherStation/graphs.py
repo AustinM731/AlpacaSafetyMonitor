@@ -7,7 +7,6 @@ import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 import matplotlib.patches as mpatches
 import os
-import psycopg2
 import config_secrets as secrets
 from sqlalchemy import create_engine
 
