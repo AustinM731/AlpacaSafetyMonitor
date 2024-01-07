@@ -1,4 +1,3 @@
-import ephem
 import datetime
 import pandas as pd
 import matplotlib
@@ -8,16 +7,14 @@ import matplotlib.dates as mdates
 import matplotlib.patches as mpatches
 import os
 import config_secrets as secrets
-from sqlalchemy import create_engine
+from pymongo import MongoClient
+from datetime import datetime, timedelta
 
-# Database connection parameters
-db_config = {
-    "dbname": secrets.postgres_db_name,
-    "user": secrets.postgres_db_user,
-    "password": secrets.postgres_db_password,
-    "host": secrets.postgres_db_host,
-    "port": secrets.postgres_db_port
-}
+def get_mongo_client():
+    hosts = ','.join(secrets.mongodb_host)
+    uri = f"mongodb://{secrets.mongodb_user}:{secrets.mongodb_password}@{hosts}/{secrets.mongodb_dbname}?authSource=admin&replicaSet={secrets.mongodb_replicaset}"
+    client = MongoClient(uri)
+    return client
 
 def set_plot_style(ax):
     # Set the style for each plot
@@ -91,16 +88,16 @@ def generate_boolean_graph(df, ax):
     legend = ax.legend(loc='upper center', bbox_to_anchor=(0.5, -0.1))
     set_plot_style(ax)
 
-db_engine = create_engine(f'postgresql://{db_config["user"]}:{db_config["password"]}@{db_config["host"]}/{db_config["dbname"]}')
 
 def generate_all_graphs(observer_latitude, observer_longitude):
-    with db_engine.connect() as conn:
-        query = """
-        SELECT timestamp, ambient_temp, sky_temp, humidity, pressure, rain, safe 
-        FROM sensor_data
-        WHERE timestamp > CURRENT_TIMESTAMP - INTERVAL '48 hours'
-        """
-        df = pd.read_sql(query, conn)
+
+    client = get_mongo_client()
+    db = client[secrets.mongodb_dbname]
+    collection = db[secrets.mongodb_collection]
+    time_threshold = datetime.now() - timedelta(hours=48)
+    query = {"timestamp": {"$gt": time_threshold}}
+    cursor = collection.find(query)
+    df = pd.DataFrame(list(cursor))
 
     fig, axs = plt.subplots(4, 1, figsize=(15, 20))
 
