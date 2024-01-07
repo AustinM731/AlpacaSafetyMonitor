@@ -61,19 +61,19 @@ def generate_clouds_graph(df, ax):
 
     set_plot_style(ax)
     ax.set_ylabel('Temperature F')
-    ax.set_title('Clouds Graph')
+    ax.set_title('Clouds')
 
 def generate_humidity_graph(df, ax):
     ax.plot(df['timestamp'], df['humidity'], label='Humidity', color='limegreen')
     ax.set_ylabel('Humidity (%)')
-    ax.set_title('Humidity Graph')
+    ax.set_title('Humidity')
     legend = ax.legend(loc='upper center', bbox_to_anchor=(0.5, -0.1))
     set_plot_style(ax)
 
 def generate_air_pressure_graph(df, ax):
     ax.plot(df['timestamp'], df['pressure'], label='Air Pressure', color='fuchsia')
     ax.set_ylabel('Pressure (inHg)')
-    ax.set_title('Air Pressure Graph')
+    ax.set_title('Air Pressure')
     legend = ax.legend(loc='upper center', bbox_to_anchor=(0.5, -0.1))
     set_plot_style(ax)
 
