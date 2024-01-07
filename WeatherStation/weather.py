@@ -36,10 +36,10 @@ bme280 = adafruit_bme280.Adafruit_BME280_I2C(i2c)
 mlx90614 = MLX90614(i2c)
 rain_sensor = InputDevice(17, pull_up=True)
 
-polling_interval = 30
+polling_interval = 5
 latest_sensor_data = {}
-safe = True
-cloudy_condition_duration = 0
+safe = False
+cloudy_condition_duration = 3000
 unsafe_cloudy_condition_duration = 5*60
 
 # def insert_into_db(data):
