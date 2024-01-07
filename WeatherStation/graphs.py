@@ -100,6 +100,7 @@ def generate_all_graphs(observer_latitude, observer_longitude):
         query = {"timestamp": {"$gt": time_threshold}}
         cursor = collection.find(query)
         df = pd.DataFrame(list(cursor))
+        df['timestamp'] = pd.to_datetime(df['timestamp'].dt.tz_localize('UTC').dt.tz_convert('US/Eastern'))
 
         fig, axs = plt.subplots(4, 1, figsize=(15, 20))
 
