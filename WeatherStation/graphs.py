@@ -90,27 +90,46 @@ def generate_boolean_graph(df, ax):
 
 
 def generate_all_graphs(observer_latitude, observer_longitude):
+    try:
+        client = get_mongo_client()
+        db = client[secrets.mongodb_dbname]
+        collection = db[secrets.mongodb_collection]
+        time_threshold = datetime.now() - timedelta(hours=48)
+        query = {"timestamp": {"$gt": time_threshold}}
+        cursor = collection.find(query)
+        df = pd.DataFrame(list(cursor))
 
-    client = get_mongo_client()
-    db = client[secrets.mongodb_dbname]
-    collection = db[secrets.mongodb_collection]
-    time_threshold = datetime.now() - timedelta(hours=48)
-    query = {"timestamp": {"$gt": time_threshold}}
-    cursor = collection.find(query)
-    df = pd.DataFrame(list(cursor))
+        fig, axs = plt.subplots(4, 1, figsize=(15, 20))
 
-    fig, axs = plt.subplots(4, 1, figsize=(15, 20))
+        try:
+            generate_clouds_graph(df, axs[0])
+        except Exception as e:
+            print(f"Error generating clouds graph: {e}")
 
-    generate_clouds_graph(df, axs[0])
-    generate_humidity_graph(df, axs[1])
-    generate_air_pressure_graph(df, axs[2])
-    generate_boolean_graph(df, axs[3])
+        try:
+            generate_humidity_graph(df, axs[1])
+        except Exception as e:
+            print(f"Error generating humidity graph: {e}")
 
-    plt.tight_layout()
-    current_script_path = os.path.dirname(os.path.abspath(__file__))
-    static_dir_path = os.path.join(current_script_path, 'static')
-    graph_path = os.path.join(static_dir_path, 'graphs.png')
-    fig.savefig(graph_path, transparent=True)
-    plt.close(fig)
+        try:
+            generate_air_pressure_graph(df, axs[2])
+        except Exception as e:
+            print(f"Error generating air pressure graph: {e}")
+
+        try:
+            generate_boolean_graph(df, axs[3])
+        except Exception as e:
+            print(f"Error generating boolean graph: {e}")
+
+        plt.tight_layout()
+        current_script_path = os.path.dirname(os.path.abspath(__file__))
+        static_dir_path = os.path.join(current_script_path, 'static')
+        graph_path = os.path.join(static_dir_path, 'graphs.png')
+        fig.savefig(graph_path, transparent=True)
+        plt.close(fig)
+
+    except Exception as e:
+        print(f"Error in generate_all_graphs: {e}")
 
 generate_all_graphs(secrets.observer_latitude, secrets.observer_longitude)
+
