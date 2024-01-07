@@ -2,6 +2,7 @@ from datetime import datetime
 from flask import Flask, jsonify, render_template
 from flask_cors import CORS
 from pymongo import MongoClient
+from pytz import timezone
 import config_secrets as secrets
 import board
 import graphs
@@ -144,7 +145,8 @@ def poll_sensors():
         determine_safety(latest_sensor_data)
 
         # current_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
-        current_time = datetime.now()
+        eastern = timezone('US/Eastern')
+        current_time = datetime.now(eastern)
         db_data = (
             current_time,
             ambient_temp_f,
