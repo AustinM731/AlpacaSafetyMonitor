@@ -9,6 +9,7 @@ import os
 import config_secrets as secrets
 from pymongo import MongoClient
 from datetime import datetime, timedelta
+from pytz import timezone
 
 def get_mongo_client():
     hosts = ','.join(secrets.mongodb_host)
@@ -94,7 +95,8 @@ def generate_all_graphs(observer_latitude, observer_longitude):
         client = get_mongo_client()
         db = client[secrets.mongodb_dbname]
         collection = db[secrets.mongodb_collection]
-        time_threshold = datetime.now() - timedelta(hours=48)
+        eastern = timezone('US/Eastern')
+        time_threshold = datetime.now(eastern) - timedelta(hours=48)
         query = {"timestamp": {"$gt": time_threshold}}
         cursor = collection.find(query)
         df = pd.DataFrame(list(cursor))
