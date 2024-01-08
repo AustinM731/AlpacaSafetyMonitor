@@ -6,6 +6,7 @@ flask-cors
 gpiozero
 matplotlib
 pandas
+pymongo
 RPi.GPIO
 psycopg2-binary
 sqlalchemy

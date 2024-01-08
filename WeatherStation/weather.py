@@ -1,5 +1,8 @@
+from datetime import datetime
 from flask import Flask, jsonify, render_template
 from flask_cors import CORS
+from pymongo import MongoClient
+from pytz import timezone
 import config_secrets as secrets
 import board
 import graphs
@@ -14,43 +17,77 @@ from gpiozero import InputDevice
 app = Flask(__name__)
 CORS(app)
 
-db_config = {
-    "dbname": secrets.postgres_db_name,
-    "user": secrets.postgres_db_user,
-    "password": secrets.postgres_db_password,
-    "host": secrets.postgres_db_host,
-    "port": secrets.postgres_db_port
-}
+# db_config = {
+#     "dbname": secrets.postgres_db_name,
+#     "user": secrets.postgres_db_user,
+#     "password": secrets.postgres_db_password,
+#     "host": secrets.postgres_db_host,
+#     "port": secrets.postgres_db_port
+# }
+
+def get_mongo_client():
+    hosts = ','.join(secrets.mongodb_host)
+    uri = f"mongodb://{secrets.mongodb_user}:{secrets.mongodb_password}@{hosts}/{secrets.mongodb_dbname}?authSource=admin&replicaSet={secrets.mongodb_replicaset}"
+    client = MongoClient(uri)
+    return client
 
 i2c = board.I2C()
 bme280 = adafruit_bme280.Adafruit_BME280_I2C(i2c)
 mlx90614 = MLX90614(i2c)
 rain_sensor = InputDevice(17, pull_up=True)
 
-polling_interval = 30
+polling_interval = 5
 latest_sensor_data = {}
-safe = True
-cloudy_condition_duration = 0
+safe = False
+cloudy_condition_duration = 3000
 unsafe_cloudy_condition_duration = 5*60
 
+# def insert_into_db(data):
+#     """ Insert sensor data into the database """
+#     conn = None
+#     try:
+#         conn = psycopg2.connect(**db_config)
+#         cur = conn.cursor()
+#         query = """
+#         INSERT INTO sensor_data (timestamp, ambient_temp, pressure, humidity, sky_temp, cloudiness, rain, safe)
+#         VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+#         """
+#         cur.execute(query, data)
+#         conn.commit()
+#         cur.close()
+#     except (Exception, psycopg2.DatabaseError) as error:
+#         print(error)
+#     finally:
+#         if conn is not None:
+#             conn.close()
+
 def insert_into_db(data):
-    """ Insert sensor data into the database """
-    conn = None
+    """ Insert sensor data into MongoDB """
+    client = None
     try:
-        conn = psycopg2.connect(**db_config)
-        cur = conn.cursor()
-        query = """
-        INSERT INTO sensor_data (timestamp, ambient_temp, pressure, humidity, sky_temp, cloudiness, rain, safe)
-        VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
-        """
-        cur.execute(query, data)
-        conn.commit()
-        cur.close()
-    except (Exception, psycopg2.DatabaseError) as error:
+        client = get_mongo_client()
+        db = client[secrets.mongodb_dbname]
+        collection = db[secrets.mongodb_collection]
+
+        # Data conversion to dictionary (if not already in that format)
+        data_dict = {
+            "timestamp": data[0],
+            "ambient_temp": data[1],
+            "pressure": data[2],
+            "humidity": data[3],
+            "sky_temp": data[4],
+            "cloudiness": data[5],
+            "rain": data[6],
+            "safe": data[7]
+        }
+
+        # Inserting data into MongoDB
+        collection.insert_one(data_dict)
+    except Exception as error:
         print(error)
     finally:
-        if conn is not None:
-            conn.close()
+        if client is not None:
+            client.close()
 
 def celsius_to_fahrenheit(celsius):
     return (celsius * 9 / 5) + 32
@@ -107,7 +144,9 @@ def poll_sensors():
         
         determine_safety(latest_sensor_data)
 
-        current_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
+        # current_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
+        eastern = timezone('US/Eastern')
+        current_time = datetime.now(eastern)
         db_data = (
             current_time,
             ambient_temp_f,

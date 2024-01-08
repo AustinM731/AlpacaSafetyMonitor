@@ -1,4 +1,3 @@
-import ephem
 import datetime
 import pandas as pd
 import matplotlib
@@ -8,16 +7,15 @@ import matplotlib.dates as mdates
 import matplotlib.patches as mpatches
 import os
 import config_secrets as secrets
-from sqlalchemy import create_engine
+from pymongo import MongoClient
+from datetime import datetime, timedelta
+from pytz import timezone
 
-# Database connection parameters
-db_config = {
-    "dbname": secrets.postgres_db_name,
-    "user": secrets.postgres_db_user,
-    "password": secrets.postgres_db_password,
-    "host": secrets.postgres_db_host,
-    "port": secrets.postgres_db_port
-}
+def get_mongo_client():
+    hosts = ','.join(secrets.mongodb_host)
+    uri = f"mongodb://{secrets.mongodb_user}:{secrets.mongodb_password}@{hosts}/{secrets.mongodb_dbname}?authSource=admin&replicaSet={secrets.mongodb_replicaset}"
+    client = MongoClient(uri)
+    return client
 
 def set_plot_style(ax):
     # Set the style for each plot
@@ -63,19 +61,19 @@ def generate_clouds_graph(df, ax):
 
     set_plot_style(ax)
     ax.set_ylabel('Temperature F')
-    ax.set_title('Clouds Graph')
+    ax.set_title('Clouds')
 
 def generate_humidity_graph(df, ax):
     ax.plot(df['timestamp'], df['humidity'], label='Humidity', color='limegreen')
     ax.set_ylabel('Humidity (%)')
-    ax.set_title('Humidity Graph')
+    ax.set_title('Humidity')
     legend = ax.legend(loc='upper center', bbox_to_anchor=(0.5, -0.1))
     set_plot_style(ax)
 
 def generate_air_pressure_graph(df, ax):
     ax.plot(df['timestamp'], df['pressure'], label='Air Pressure', color='fuchsia')
     ax.set_ylabel('Pressure (inHg)')
-    ax.set_title('Air Pressure Graph')
+    ax.set_title('Air Pressure')
     legend = ax.legend(loc='upper center', bbox_to_anchor=(0.5, -0.1))
     set_plot_style(ax)
 
@@ -91,29 +89,50 @@ def generate_boolean_graph(df, ax):
     legend = ax.legend(loc='upper center', bbox_to_anchor=(0.5, -0.1))
     set_plot_style(ax)
 
-db_engine = create_engine(f'postgresql://{db_config["user"]}:{db_config["password"]}@{db_config["host"]}/{db_config["dbname"]}')
 
 def generate_all_graphs(observer_latitude, observer_longitude):
-    with db_engine.connect() as conn:
-        query = """
-        SELECT timestamp, ambient_temp, sky_temp, humidity, pressure, rain, safe 
-        FROM sensor_data
-        WHERE timestamp > CURRENT_TIMESTAMP - INTERVAL '48 hours'
-        """
-        df = pd.read_sql(query, conn)
+    try:
+        client = get_mongo_client()
+        db = client[secrets.mongodb_dbname]
+        collection = db[secrets.mongodb_collection]
+        eastern = timezone('US/Eastern')
+        time_threshold = datetime.now(eastern) - timedelta(hours=48)
+        query = {"timestamp": {"$gt": time_threshold}}
+        cursor = collection.find(query)
+        df = pd.DataFrame(list(cursor))
+        df['timestamp'] = pd.to_datetime(df['timestamp'].dt.tz_localize('UTC').dt.tz_convert('US/Eastern'))
 
-    fig, axs = plt.subplots(4, 1, figsize=(15, 20))
+        fig, axs = plt.subplots(4, 1, figsize=(15, 20))
 
-    generate_clouds_graph(df, axs[0])
-    generate_humidity_graph(df, axs[1])
-    generate_air_pressure_graph(df, axs[2])
-    generate_boolean_graph(df, axs[3])
+        try:
+            generate_clouds_graph(df, axs[0])
+        except Exception as e:
+            print(f"Error generating clouds graph: {e}")
 
-    plt.tight_layout()
-    current_script_path = os.path.dirname(os.path.abspath(__file__))
-    static_dir_path = os.path.join(current_script_path, 'static')
-    graph_path = os.path.join(static_dir_path, 'graphs.png')
-    fig.savefig(graph_path, transparent=True)
-    plt.close(fig)
+        try:
+            generate_humidity_graph(df, axs[1])
+        except Exception as e:
+            print(f"Error generating humidity graph: {e}")
+
+        try:
+            generate_air_pressure_graph(df, axs[2])
+        except Exception as e:
+            print(f"Error generating air pressure graph: {e}")
+
+        try:
+            generate_boolean_graph(df, axs[3])
+        except Exception as e:
+            print(f"Error generating boolean graph: {e}")
+
+        plt.tight_layout()
+        current_script_path = os.path.dirname(os.path.abspath(__file__))
+        static_dir_path = os.path.join(current_script_path, 'static')
+        graph_path = os.path.join(static_dir_path, 'graphs.png')
+        fig.savefig(graph_path, transparent=True)
+        plt.close(fig)
+
+    except Exception as e:
+        print(f"Error in generate_all_graphs: {e}")
 
 generate_all_graphs(secrets.observer_latitude, secrets.observer_longitude)
+
