@@ -12,7 +12,12 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('safe').textContent = isSafe ? 'Safe' : 'Unsafe';
     }
 
-    fetch('http://localhost:5000/data')
+    // Use window.location.hostname to get the current server's IP or domain
+    const serverIP = window.location.hostname;
+    const dataEndpoint = `http://${serverIP}:5000/data`;
+    const safetyEndpoint = `http://${serverIP}:5000/is_safe`;
+
+    fetch(dataEndpoint)
     .then(response => response.json())
     .then(data => {
         console.log('Sensor data:', data);
@@ -20,7 +25,7 @@ document.addEventListener('DOMContentLoaded', function() {
     })
     .catch(error => console.error('Error fetching sensor data:', error));
 
-    fetch('http://localhost:5000/is_safe')
+    fetch(safetyEndpoint)
     .then(response => response.json())
     .then(data => {
         console.log('Safety status:', data);
