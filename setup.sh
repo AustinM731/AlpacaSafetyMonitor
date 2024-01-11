@@ -13,7 +13,7 @@ APP_USER="austin"
 
 # Installation of Python and virtualenv
 apt-get update
-apt-get install -y python3 python3-venv git
+apt-get install -y python3 python3-venv git python3-dev
 
 # Create application directory and clone the repo
 mkdir -p $ALPACA_APP_DIR

@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('safe').textContent = isSafe ? 'Safe' : 'Unsafe';
     }
 
-    fetch('http://192.168.120.196:5000/data')
+    fetch('http://localhost:5000/data')
     .then(response => response.json())
     .then(data => {
         console.log('Sensor data:', data);
@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', function() {
     })
     .catch(error => console.error('Error fetching sensor data:', error));
 
-    fetch('http://192.168.120.196:5000/is_safe')
+    fetch('http://localhost:5000/is_safe')
     .then(response => response.json())
     .then(data => {
         console.log('Safety status:', data);
